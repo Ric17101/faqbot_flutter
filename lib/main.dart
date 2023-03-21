@@ -37,11 +37,11 @@ class ChatBotScreen extends StatefulWidget {
 
 class ChatBotScreenState extends State<ChatBotScreen> {
   final messageInsert = TextEditingController();
-  List<Map> messsages = [];
+  List<Map> mappedMessages = [];
 
   void response(query) async {
     AuthGoogle authGoogle =
-        await AuthGoogle(fileJson: "assets/farmtech-fh9j-3db6e0409c71.json")
+        await AuthGoogle(fileJson: "assets/flutterfaqbot_dialog_auth.json")
             .build();
     DialogFlow dialogflow = DialogFlow(authGoogle: authGoogle, language: "en");
     AIResponse aiResponse = await dialogflow.detectIntent(query);
@@ -50,7 +50,7 @@ class ChatBotScreenState extends State<ChatBotScreen> {
     if (messageList == null || messageList.isEmpty) return;
 
     setState(() {
-      messsages.insert(0,
+      mappedMessages.insert(0,
           {"data": 0, "message": messageList[0]["text"]["text"][0].toString()});
     });
   }
@@ -60,14 +60,8 @@ class ChatBotScreenState extends State<ChatBotScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        toolbarHeight: 70,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(30),
-            bottomRight: Radius.circular(30),
-          ),
-        ),
-        elevation: 10,
+        toolbarHeight: 70.0,
+        elevation: 10.0,
         title: const Text("Dailog Flow Chatbot"),
       ),
       body: Column(
@@ -75,10 +69,10 @@ class ChatBotScreenState extends State<ChatBotScreen> {
           Flexible(
             child: ListView.builder(
               reverse: true,
-              itemCount: messsages.length,
+              itemCount: mappedMessages.length,
               itemBuilder: (context, index) => chat(
-                messsages[index]["message"].toString(),
-                messsages[index]["data"],
+                mappedMessages[index]["message"].toString(),
+                mappedMessages[index]["data"],
               ),
             ),
           ),
@@ -89,7 +83,7 @@ class ChatBotScreenState extends State<ChatBotScreen> {
             padding: const EdgeInsets.only(
               left: 15.0,
               right: 15.0,
-              bottom: 20,
+              bottom: 20.0,
             ),
             margin: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
@@ -116,7 +110,7 @@ class ChatBotScreenState extends State<ChatBotScreen> {
                           print("empty message");
                         } else {
                           setState(() {
-                            messsages.insert(
+                            mappedMessages.insert(
                                 0, {"data": 1, "message": messageInsert.text});
                           });
                           response(messageInsert.text);
@@ -138,7 +132,7 @@ class ChatBotScreenState extends State<ChatBotScreen> {
       padding: const EdgeInsets.all(10.0),
       child: Bubble(
         radius: const Radius.circular(15.0),
-        color: data == 0 ? Colors.blue : Colors.orangeAccent,
+        color: data == 0 ? Colors.grey[300] : Colors.blueAccent,
         elevation: 0.0,
         alignment: data == 0 ? Alignment.topLeft : Alignment.topRight,
         nip: data == 0 ? BubbleNip.leftBottom : BubbleNip.rightTop,
@@ -149,7 +143,8 @@ class ChatBotScreenState extends State<ChatBotScreen> {
             children: <Widget>[
               CircleAvatar(
                 backgroundImage: AssetImage(
-                    data == 0 ? "assets/bot.png" : "assets/user.png"),
+                  data == 0 ? "assets/bot.png" : "assets/user.png",
+                ),
               ),
               const SizedBox(
                 width: 10.0,
@@ -157,9 +152,8 @@ class ChatBotScreenState extends State<ChatBotScreen> {
               Flexible(
                 child: Text(
                   message,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                  style: TextStyle(
+                    color: data == 0 ? Colors.black : Colors.white,
                   ),
                 ),
               )
